@@ -1,11 +1,31 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+// declaração do model(objeto) que define a tabela e seus campos no banco de dados
+model User {
+  id         String @id @default(uuid()) //primary_key uuid do tipo string
+  name       String
+  github_id  Int
+  avatar_url String
+  login      String
+
+  messages Message[]
+  @@map("users")
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  text       String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id])
+
+  user_id String
+  @@map("messages")
 }
